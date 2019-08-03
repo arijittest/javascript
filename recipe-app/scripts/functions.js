@@ -1,47 +1,57 @@
-// Generate the DOM structure for a recipe
-const generateRecipeDOM = (recipe) => {
-    const recipeEl = document.createElement('a')
-    const textEl = document.createElement('p')
-    const statusEl = document.createElement('p')
+let filterText = {
+    searchText: '',
+};
 
-    // Setup the recipe title text
-    if (recipe.title.length > 0) {
-        textEl.textContent = note.title
-    } else {
-        textEl.textContent = 'Unnamed note'
+
+const getRecipeArray = ()=>{
+    
+    const recipeString=localStorage.getItem('recipes');
+    const recipes=JSON.parse(recipeString);
+
+    if(!recipes){
+        return []
+    }else{
+        return recipes;
     }
-    textEl.classList.add('list-item__title')
-    noteEl.appendChild(textEl)
 
-    // // Setup the link
-    // recipeEl.setAttribute('href', `/edit.html#${recipe.id}`)
-    // recipeEl.classList.add('list-item')
-
-    // // Setup the status message
-    // statusEl.textContent = generateLastEdited(note.updatedAt)
-    // statusEl.classList.add('list-item__subtitle')
-    // recipeEl.appendChild(statusEl)
-
-    return recipeEl
 }
 
-const renderRecipes=(recipes,filters)=>{
+const generateDOM = (recipe)=>{
+    let newRecipeElem=document.createElement('textarea');
 
-    const recipeElements=document.querySelector('#display-recipe');
-    const filteredRecipes = recipes.filter((recipe) => recipe.title.toLowerCase().includes(filters.searchText.toLowerCase()))
+    newRecipeElem.setAttribute("columns","5");
+    newRecipeElem.setAttribute("rows","6");
+    newRecipeElem.setAttribute("class","recipeClass");
+    newRecipeElem.value=recipe.title+"\n"+recipe.summary;
 
-    recipeElements.innerHTML='';
-    if (filteredRecipes.length > 0) {
-        filteredRecipes.forEach((recipe) => {
-            const recipeEl = generateRecipeDOM(recipe)
-            recipeEl.appendChild(recipeEl)
-        })
-    } else {
-        const emptyMessage = document.createElement('p')
-        emptyMessage.textContent = 'No recipe to show'
-        emptyMessage.classList.add('empty-message')
-        notesEl.appendChild(emptyMessage)
+    return newRecipeElem;
+
+}
+
+const renderRecipes=(recipes,filterText)=>{
+
+    const filteredRecipes=recipes.filter( recipe => recipe.title.toLowerCase().includes(filterText.searchText.toLowerCase()) )
+    const dispRecipeElem=document.querySelector('#display-recipe');
+
+    dispRecipeElem.innerHTML='';
+
+    for(let recipe of filteredRecipes){
+
+        let brElem=document.createElement('br');
+
+    
+        let recipeDom=generateDOM(recipe);
+    
+        dispRecipeElem.appendChild(recipeDom);
+        dispRecipeElem.appendChild(brElem);
+    
     }
 
+}
+
+const saveRecipes = (recipes)=>{
+
+    const recipesStorage = JSON.stringify(recipes);
+    localStorage.setItem('recipes',recipesStorage);
 
 }
