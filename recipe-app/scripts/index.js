@@ -12,15 +12,18 @@ document.querySelector('#searchText').addEventListener('input',(e)=>{
 
 document.querySelector('#add-recipe').addEventListener('click',(e)=>{
 
-    //location.assign('/recipe.html');
+    const id=uuidv4();
 
     recipes.push({
-        title: 'This is a dummy recipe added',
-        summary: 'Dummy ingredients'
+        id: id,
+        title: '',
+        summary: ''
     })
 
     saveRecipes(recipes);
     renderRecipes(recipes,filterText);
+
+    location.assign(`/recipe.html#${id}`);
 
 })
 
